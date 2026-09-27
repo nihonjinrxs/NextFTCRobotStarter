@@ -1,4 +1,5 @@
 plugins {
+    id "com.peterabeles.gversion" version "1.11.0"
     id "com.diffplug.spotless" version "8.10.3"
 }
 
@@ -32,7 +33,19 @@ dependencies {
     implementation project(':FtcRobotController')
 }
 
+project.preBuild.dependsOn(createVersionFile)
 project.preBuild.dependsOn(spotlessApply)
+project.build.dependsOn(spotlessApply)
+
+gversion {
+    srcDir = "src/main/java/"
+    classPackage = "org.firstinspires.ftc.teamcode.generated"
+    className = "BuildConstants"
+    dateFormat = "yyyy-MM-dd HH:mm:ss z"
+    timeZone = "America/Chicago"
+    indent = "  "
+}
+
 spotless {
     java {
         target fileTree('.') {
