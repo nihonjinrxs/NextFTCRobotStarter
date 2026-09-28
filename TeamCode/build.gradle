@@ -77,16 +77,6 @@ spotless {
         trimTrailingWhitespace()
         endWithNewline()
     }
-    format 'xml', {
-        target fileTree('.') {
-            include '**/*.xml'
-            exclude '**/build/**', '**/build-*/**'
-        }
-        eclipseWtp('xml')
-        trimTrailingWhitespace()
-        leadingTabsToSpaces(2)
-        endWithNewline()
-    }
     format 'misc', {
         target fileTree('.') {
             include '**/*.md', '**/.gitignore'
