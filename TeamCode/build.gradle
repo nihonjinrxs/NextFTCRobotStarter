@@ -1,3 +1,8 @@
+plugins {
+    id "com.peterabeles.gversion" version "1.11.0"
+    id "com.diffplug.spotless" version "8.10.3"
+}
+
 apply plugin: 'com.android.application'
 
 //
@@ -26,4 +31,59 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
+}
+
+project.preBuild.dependsOn(createVersionFile)
+project.preBuild.dependsOn(spotlessApply)
+project.build.dependsOn(spotlessApply)
+
+gversion {
+    srcDir = "src/main/java/"
+    classPackage = "org.firstinspires.ftc.teamcode.generated"
+    className = "BuildConstants"
+    dateFormat = "yyyy-MM-dd HH:mm:ss z"
+    timeZone = "America/Chicago"
+    indent = "  "
+}
+
+spotless {
+    java {
+        target fileTree('.') {
+            include '**/*.java'
+            exclude '**/build/**', '**/build-*/**', '**/bin/**', '**/deploy/**', '**/generated/**'
+        }
+        toggleOffOn()
+        //        googleJavaFormat()
+        princeOfSpace('2.2.0')
+                .indentStyle('SPACES') // or 'TABS'
+                .indentSize(2)
+                .lineLength(120)
+                .wrapStyle('WIDE') // or 'BALANCED', 'NARROW'
+                .closingParenOnNewLine(true)
+                .trailingCommas(true)
+                .javaLanguageLevel(17)
+        removeUnusedImports()
+        shortenFullyQualifiedTypes()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    groovyGradle {
+        target fileTree('.') {
+            include '**/*.gradle'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        greclipse()
+        leadingTabsToSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    format 'misc', {
+        target fileTree('.') {
+            include '**/*.md', '**/.gitignore'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        trimTrailingWhitespace()
+        leadingTabsToSpaces(2)
+        endWithNewline()
+    }
 }
